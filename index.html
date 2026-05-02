@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChainCacao — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --cacao:    #3B1F0A;
+      --terre:    #7A3B1E;
+      --or:       #D4882A;
+      --sable:    #F5EDD9;
+      --feuille:  #2D5A27;
+      --blanc:    #FDFAF4;
+      --gris:     #8A7060;
+      --bordure:  #E8D8BC;
+      --ombre:    rgba(59,31,10,0.12);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blanc);
+      color: var(--cacao);
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--cacao);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px var(--ombre);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--or);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--sable);
+      letter-spacing: -0.02em;
+    }
+    .logo-text span { color: var(--or); }
+    nav a {
+      color: var(--sable);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.7;
+      margin-left: 2rem;
+      transition: opacity 0.2s;
+    }
+    nav a:hover, nav a.active { opacity: 1; color: var(--or); }
+
+    /* ===== HERO BAND ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--terre) 0%, var(--cacao) 60%);
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '🌱';
+      position: absolute;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 7rem;
+      opacity: 0.1;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--sable);
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 em { color: var(--or); font-style: normal; }
+    .hero p {
+      color: rgba(245,237,217,0.7);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    /* ===== STATS CARDS ===== */
+    .stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      min-width: 140px;
+      transition: background 0.2s;
+    }
+    .stat-card:hover { background: rgba(255,255,255,0.14); }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--or);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(245,237,217,0.6);
+      margin-top: 0.2rem;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    /* ===== TOOLBAR ===== */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .toolbar h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cacao);
+    }
+    .btn-primary {
+      background: var(--or);
+      color: var(--cacao);
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 8px rgba(212,136,42,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(212,136,42,0.45);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--terre);
+      border: 1.5px solid var(--bordure);
+      padding: 0.55rem 1rem;
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--or);
+      background: var(--sable);
+    }
+
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+    .search-input {
+      flex: 1;
+      max-width: 320px;
+      padding: 0.65rem 1rem;
+      border: 1.5px solid var(--bordure);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      background: var(--sable);
+      color: var(--cacao);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--or); }
+    .search-input::placeholder { color: var(--gris); }
+
+    /* ===== TABLE DES LOTS ===== */
+    .lots-table {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--bordure);
+      overflow: hidden;
+      box-shadow: 0 2px 20px var(--ombre);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead { background: var(--sable); }
+    thead th {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gris);
+      border-bottom: 1px solid var(--bordure);
+    }
+    tbody tr {
+      transition: background 0.15s;
+      animation: fadeInRow 0.4s ease both;
+    }
+    tbody tr:hover { background: var(--sable); }
+    tbody td {
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--bordure);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .lot-id {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--terre);
+      background: var(--sable);
+      padding: 0.25rem 0.6rem;
+      border-radius: 5px;
+      border: 1px solid var(--bordure);
+      letter-spacing: 0.04em;
+    }
+
+    /* Badge statut */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-ferme    { background: #FFF3CD; color: #856404; }
+    .badge-coop     { background: #D1ECF1; color: #0C5460; }
+    .badge-export   { background: #D4EDDA; color: #155724; }
+    .badge-transit  { background: #F3E5F5; color: #6A1B9A; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--gris);
+    }
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .empty-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--cacao);
+      margin-bottom: 0.5rem;
+    }
+    .empty-state p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInRow {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    main { animation: fadeIn 0.5s ease; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gris);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--bordure);
+      margin-top: 4rem;
+    }
+    footer span { color: var(--or); font-weight: 600; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.6rem; }
+      thead th:nth-child(3),
+      tbody td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🍫</div>
+    <div class="logo-text">Chain<span>Cacao</span></div>
+  </div>
+  <nav>
+    <a href="index.html" class="active">Dashboard</a>
+    <a href="create.html">Nouveau lot</a>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Traçabilité <em>blockchain</em><br>du cacao togolais</h1>
+    <p>Chaque lot, de la ferme à l'exportation — transparent, vérifiable, certifiable EUDR.</p>
+    <div class="stats" id="statsBar">
+      <!-- injecté par JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<main>
+  <div class="toolbar">
+    <h2>Lots enregistrés</h2>
+    <a href="create.html" class="btn-primary">＋ Créer un lot</a>
+  </div>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      class="search-input"
+      id="searchInput"
+      placeholder="🔍 Rechercher un lot, producteur, origine…"
+    />
+  </div>
+
+  <div class="lots-table" id="lotsContainer">
+    <!-- injecté par JS -->
+  </div>
+</main>
+
+<footer>
+  <p>ChainCacao © 2026 — <span>MIABE Hackathon</span> · Togo · Projet T-01</p>
+</footer>
+
+<script>
+  // ===== UTILITAIRES =====
+
+  /**
+   * Récupère tous les lots depuis localStorage.
+   * @returns {Array} tableau de lots
+   */
+  function getLots() {
+    return JSON.parse(localStorage.getItem('chaincacao_lots') || '[]');
+  }
+
+  /**
+   * Génère un identifiant de lot unique.
+   * Format : CC-YYYYMMDD-XXXX
+   */
+  function genId() {
+    const d = new Date();
+    const dateStr = d.getFullYear().toString() +
+      String(d.getMonth()+1).padStart(2,'0') +
+      String(d.getDate()).padStart(2,'0');
+    const rand = Math.random().toString(36).substring(2,6).toUpperCase();
+    return `CC-${dateStr}-${rand}`;
+  }
+
+  /**
+   * Retourne le badge HTML selon le statut.
+   */
+  function badgeStatut(statut) {
+    const map = {
+      'Ferme':        ['badge-ferme',   '🌿 Ferme'],
+      'Coopérative':  ['badge-coop',    '🏭 Coopérative'],
+      'Exportateur':  ['badge-export',  '🚢 Exportateur'],
+      'En transit':   ['badge-transit', '🔄 En transit'],
+    };
+    const [cls, label] = map[statut] || ['badge-ferme', statut];
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  // ===== STATS =====
+
+  /**
+   * Calcule et affiche les statistiques du dashboard.
+   */
+  function renderStats(lots) {
+    const total     = lots.length;
+    const totalKg   = lots.reduce((s, l) => s + parseFloat(l.poids || 0), 0);
+    const enExport  = lots.filter(l => l.statut === 'Exportateur').length;
+
+    document.getElementById('statsBar').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-number">${total}</div>
+        <div class="stat-label">Lots enregistrés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">${totalKg.toLocaleString('fr-FR')} kg</div>
+        <div class="stat-label">Volume total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">${enExport}</div>
+        <div class="stat-label">Prêts à l'export</div>
+      </div>
+    `;
+  }
+
+  // ===== RENDU TABLE =====
+
+  /**
+   * Affiche les lots dans le tableau.
+   * @param {Array} lots - liste des lots à afficher
+   */
+  function renderTable(lots) {
+    const container = document.getElementById('lotsContainer');
+
+    if (lots.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🌱</div>
+          <h3>Aucun lot enregistré</h3>
+          <p>Commencez par enregistrer votre première récolte de cacao.</p>
+          <a href="create.html" class="btn-primary">＋ Créer le premier lot</a>
+        </div>
+      `;
+      return;
+    }
+
+    // Tri : plus récent en premier
+    const sorted = [...lots].sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation));
+
+    const rows = sorted.map((lot, i) => {
+      const date = new Date(lot.dateCreation).toLocaleDateString('fr-FR');
+      return `
+        <tr style="animation-delay: ${i * 0.05}s">
+          <td><span class="lot-id">${lot.id}</span></td>
+          <td><strong>${lot.producteur}</strong></td>
+          <td>${lot.origine}</td>
+          <td>${parseFloat(lot.poids).toLocaleString('fr-FR')} kg</td>
+          <td>${badgeStatut(lot.statut)}</td>
+          <td>${date}</td>
+          <td>
+            <a href="track.html?id=${lot.id}" class="btn-secondary">Voir détails →</a>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>ID Lot</th>
+            <th>Producteur</th>
+            <th>Origine</th>
+            <th>Poids</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  // ===== RECHERCHE =====
+
+  /**
+   * Filtre les lots selon la recherche saisie.
+   */
+  function setupSearch(lots) {
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      const filtered = q
+        ? lots.filter(l =>
+            l.id.toLowerCase().includes(q) ||
+            l.producteur.toLowerCase().includes(q) ||
+            l.origine.toLowerCase().includes(q)
+          )
+        : lots;
+      renderTable(filtered);
+    });
+  }
+
+  // ===== INIT =====
+  (function init() {
+    const lots = getLots();
+    renderStats(lots);
+    renderTable(lots);
+    setupSearch(lots);
+  })();
+</script>
+
+</body>
+</html>

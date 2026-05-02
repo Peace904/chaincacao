@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChainCacao — Nouveau lot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --cacao:    #3B1F0A;
+      --terre:    #7A3B1E;
+      --or:       #D4882A;
+      --sable:    #F5EDD9;
+      --feuille:  #2D5A27;
+      --blanc:    #FDFAF4;
+      --gris:     #8A7060;
+      --bordure:  #E8D8BC;
+      --ombre:    rgba(59,31,10,0.12);
+      --erreur:   #C0392B;
+      --succes:   #27AE60;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blanc);
+      color: var(--cacao);
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--cacao);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px var(--ombre);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--or);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--sable);
+    }
+    .logo-text span { color: var(--or); }
+    nav a {
+      color: var(--sable);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.7;
+      margin-left: 2rem;
+      transition: opacity 0.2s;
+    }
+    nav a:hover, nav a.active { opacity: 1; color: var(--or); }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+      background: var(--sable);
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid var(--bordure);
+      font-size: 0.83rem;
+      color: var(--gris);
+    }
+    .breadcrumb a {
+      color: var(--terre);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .breadcrumb a:hover { color: var(--or); }
+    .breadcrumb .sep { margin: 0 0.5rem; }
+
+    /* ===== LAYOUT ===== */
+    .page-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .page-header { margin-bottom: 2rem; }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--cacao);
+      margin-bottom: 0.4rem;
+    }
+    .page-header p { color: var(--gris); font-size: 0.95rem; }
+
+    /* ===== CARD FORMULAIRE ===== */
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--bordure);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 24px var(--ombre);
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--or);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--bordure);
+    }
+
+    /* ===== GRID ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field.full { grid-column: 1 / -1; }
+
+    /* ===== LABELS & INPUTS ===== */
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cacao);
+    }
+    label .req { color: var(--or); margin-left: 2px; }
+
+    input, select, textarea {
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--bordure);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      background: var(--sable);
+      color: var(--cacao);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--or);
+      box-shadow: 0 0 0 3px rgba(212,136,42,0.15);
+      background: #fff;
+    }
+    input.error, select.error { border-color: var(--erreur); }
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--gris);
+      margin-top: 0.15rem;
+    }
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--erreur);
+      margin-top: 0.15rem;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    textarea { resize: vertical; min-height: 80px; }
+    select { cursor: pointer; }
+
+    /* ===== SEPARATEUR ===== */
+    .separator {
+      border: none;
+      border-top: 1px solid var(--bordure);
+      margin: 1.75rem 0;
+    }
+
+    /* ===== ACTIONS ===== */
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--or);
+      color: var(--cacao);
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 10px rgba(212,136,42,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212,136,42,0.45);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-cancel {
+      color: var(--gris);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .btn-cancel:hover { color: var(--cacao); }
+
+    /* ===== TOAST SUCCÈS ===== */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--feuille);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      transform: translateY(120%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 999;
+      max-width: 340px;
+    }
+    .toast.show { transform: translateY(0); }
+    .toast-icon { font-size: 1.4rem; }
+
+    /* ===== BLOCKCHAIN BADGE ===== */
+    .blockchain-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, #EBF5FB, #D6EAF8);
+      border: 1px solid #AED6F1;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.84rem;
+      color: #1A5276;
+    }
+    .blockchain-note .bc-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .blockchain-note strong { display: block; margin-bottom: 0.2rem; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🍫</div>
+    <div class="logo-text">Chain<span>Cacao</span></div>
+  </a>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="create.html" class="active">Nouveau lot</a>
+  </nav>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">Dashboard</a>
+  <span class="sep">›</span>
+  Enregistrer un nouveau lot
+</div>
+
+<!-- PAGE -->
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Enregistrer un lot 🌿</h1>
+    <p>Chaque lot enregistré reçoit un identifiant unique et est traçable sur toute la chaîne de valeur.</p>
+  </div>
+
+  <!-- NOTE BLOCKCHAIN -->
+  <div class="blockchain-note">
+    <div class="bc-icon">⛓️</div>
+    <div>
+      <strong>Enregistrement blockchain</strong>
+      Les informations saisies sont horodatées et liées à un identifiant immuable, 
+      garantissant la conformité aux exigences EUDR de l'Union Européenne.
+    </div>
+  </div>
+
+  <!-- FORMULAIRE -->
+  <div class="form-card">
+
+    <!-- Section 1 : Identification -->
+    <div class="section-title">① Identification du lot</div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="producteur">Nom du producteur / coopérative <span class="req">*</span></label>
+        <input type="text" id="producteur" placeholder="Ex: COOPAGROEST, Koffi Amédé…" />
+        <div class="field-error" id="err-producteur">Ce champ est requis.</div>
+      </div>
+      <div class="field">
+        <label for="espece">Espèce / variété <span class="req">*</span></label>
+        <select id="espece">
+          <option value="">— Sélectionner —</option>
+          <option value="Cacao Forastero">Cacao Forastero</option>
+          <option value="Cacao Trinitario">Cacao Trinitario</option>
+          <option value="Cacao Criollo">Cacao Criollo</option>
+          <option value="Café Robusta">Café Robusta</option>
+          <option value="Café Arabica">Café Arabica</option>
+        </select>
+        <div class="field-error" id="err-espece">Veuillez sélectionner une espèce.</div>
+      </div>
+    </div>
+
+    <hr class="separator" />
+
+    <!-- Section 2 : Origine géographique -->
+    <div class="section-title">② Origine géographique</div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="origine">Village / Localité <span class="req">*</span></label>
+        <input type="text" id="origine" placeholder="Ex: Kpalimé, Badou, Tomégbé…" />
+        <div class="field-error" id="err-origine">Ce champ est requis.</div>
+      </div>
+      <div class="field">
+        <label for="region">Région</label>
+        <select id="region">
+          <option value="">— Sélectionner —</option>
+          <option value="Plateaux">Plateaux</option>
+          <option value="Centrale">Centrale</option>
+          <option value="Kara">Kara</option>
+          <option value="Maritime">Maritime</option>
+          <option value="Savanes">Savanes</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="gpsLat">Latitude GPS</label>
+        <input type="number" id="gpsLat" placeholder="Ex: 6.8913" step="0.0001" />
+        <div class="field-hint">Optionnel — pour conformité EUDR</div>
+      </div>
+      <div class="field">
+        <label for="gpsLon">Longitude GPS</label>
+        <input type="number" id="gpsLon" placeholder="Ex: 0.5891" step="0.0001" />
+      </div>
+    </div>
+
+    <hr class="separator" />
+
+    <!-- Section 3 : Caractéristiques -->
+    <div class="section-title">③ Caractéristiques du lot</div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="poids">Poids (kg) <span class="req">*</span></label>
+        <input type="number" id="poids" placeholder="Ex: 500" min="1" step="0.1" />
+        <div class="field-error" id="err-poids">Entrez un poids valide (> 0 kg).</div>
+      </div>
+      <div class="field">
+        <label for="dateRecolte">Date de récolte <span class="req">*</span></label>
+        <input type="date" id="dateRecolte" />
+        <div class="field-error" id="err-dateRecolte">Date requise.</div>
+      </div>
+      <div class="field">
+        <label for="qualite">Niveau de qualité</label>
+        <select id="qualite">
+          <option value="Standard">Standard</option>
+          <option value="Premium">Premium</option>
+          <option value="Fairtrade">Fairtrade</option>
+          <option value="Bio certifié">Bio certifié</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="statut">Statut initial</label>
+        <select id="statut">
+          <option value="Ferme">🌿 Ferme</option>
+          <option value="Coopérative">🏭 Coopérative</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="notes">Notes / Observations</label>
+        <textarea id="notes" placeholder="Ex: Fermentation 7 jours, séchage solaire, conditions particulières…"></textarea>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="form-actions">
+      <a href="index.html" class="btn-cancel">← Annuler</a>
+      <form id="lotForm">
+     <button type="submit" class="btn-primary" id="btnSave">
+    ✅ Enregistrer le lot
+     </button>
+     </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <div>
+    <strong>Lot enregistré !</strong>
+    <div id="toastLotId" style="font-size:0.8rem;opacity:0.85;margin-top:2px;"></div>
+  </div>
+</div>
+
+<script>
+  // ===== UTILITAIRES =====
+
+  /**
+   * Récupère tous les lots depuis localStorage.
+   */
+  function getLots() {
+    return JSON.parse(localStorage.getItem('chaincacao_lots') || '[]');
+    const newLot = { 
+      id: "CC-" + Date.now(), 
+      producteur: document.getElementById('producteur').value, 
+      origine: document.getElementById('origine').value,
+       region: document.getElementById('region').value, 
+       espece: document.getElementById('espece').value, 
+       poids: document.getElementById('poids').value, 
+       qualite: document.getElementById('qualite').value, 
+       statut: document.getElementById('statut').value, 
+       dateRecolte: document.getElementById('dateRecolte').value, 
+       dateCreation: new Date().toISOString(), 
+       historique: [
+      {
+        etape: "Ferme",
+        acteur: document.getElementById('producteur').value,
+        date: new Date().toISOString(),
+        commentaire: "Création du lot"
+      }
+    ]
+  };
+
+  lots.push(newLot);
+  localStorage.setItem('chaincacao_lots', JSON.stringify(lots));
+  }
+
+  /**
+   * Sauvegarde tous les lots dans localStorage.
+   */
+  function saveLots(lots) {
+    localStorage.setItem('chaincacao_lots', JSON.stringify(lots));
+  }
+
+  /**
+   * Génère un identifiant de lot unique.
+   * Format : CC-YYYYMMDD-XXXX
+   */
+  function genId() {
+    const d = new Date();
+    const dateStr = d.getFullYear().toString() +
+      String(d.getMonth()+1).padStart(2,'0') +
+      String(d.getDate()).padStart(2,'0');
+    const rand = Math.random().toString(36).substring(2,6).toUpperCase();
+    return `CC-${dateStr}-${rand}`;
+  }
+
+  /**
+   * Affiche ou cache un message d'erreur pour un champ.
+   */
+  function setError(fieldId, visible) {
+    const input = document.getElementById(fieldId);
+    const errEl = document.getElementById('err-' + fieldId);
+    if (input)  input.classList.toggle('error', visible);
+    if (errEl)  errEl.classList.toggle('visible', visible);
+  }
+
+  /**
+   * Affiche le toast de succès puis redirige.
+   */
+  function showToast(lotId) {
+    document.getElementById('toastLotId').textContent = 'ID : ' + lotId;
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+
+    // Redirection vers dashboard après 1.8s
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1800);
+  }
+
+  // ===== DATE PAR DÉFAUT =====
+  // Pré-rempli la date de récolte avec aujourd'hui
+  (function setDefaultDate() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateRecolte').value = today;
+  })();
+
+  // ===== VALIDATION & SAUVEGARDE =====
+
+  /**
+   * Valide le formulaire, crée le lot et le sauvegarde.
+   * Structure d'un lot :
+   * {
+   *   id          : string    — identifiant unique CC-YYYYMMDD-XXXX
+   *   producteur  : string
+   *   espece      : string
+   *   origine     : string
+   *   region      : string
+   *   gpsLat      : number|null
+   *   gpsLon      : number|null
+   *   poids       : number    — en kg
+   *   dateRecolte : string    — YYYY-MM-DD
+   *   qualite     : string
+   *   statut      : string    — étape courante de la chaîne
+   *   notes       : string
+   *   dateCreation: string    — ISO timestamp
+   *   historique  : Array     — tableau des transferts/événements
+   * }
+   */
+  function saveLot() {
+    // --- Récupération des valeurs ---
+    const producteur  = document.getElementById('producteur').value.trim();
+    const espece      = document.getElementById('espece').value;
+    const origine     = document.getElementById('origine').value.trim();
+    const region      = document.getElementById('region').value;
+    const gpsLat      = document.getElementById('gpsLat').value;
+    const gpsLon      = document.getElementById('gpsLon').value;
+    const poids       = parseFloat(document.getElementById('poids').value);
+    const dateRecolte = document.getElementById('dateRecolte').value;
+    const qualite     = document.getElementById('qualite').value;
+    const statut      = document.getElementById('statut').value;
+    const notes       = document.getElementById('notes').value.trim();
+
+    // --- Validation ---
+    let hasError = false;
+
+    setError('producteur',  !producteur);
+    setError('espece',      !espece);
+    setError('origine',     !origine);
+    setError('poids',       !poids || poids <= 0);
+    setError('dateRecolte', !dateRecolte);
+
+    if (!producteur || !espece || !origine || !poids || poids <= 0 || !dateRecolte) {
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    // --- Construction du lot ---
+    const now = new Date().toISOString();
+    const lot = {
+      id:           genId(),
+      producteur,
+      espece,
+      origine,
+      region,
+      gpsLat:       gpsLat ? parseFloat(gpsLat) : null,
+      gpsLon:       gpsLon ? parseFloat(gpsLon) : null,
+      poids,
+      dateRecolte,
+      qualite,
+      statut,
+      notes,
+      dateCreation: now,
+      historique: [
+        {
+          etape:     statut,
+          acteur:    producteur,
+          date:      now,
+          commentaire: `Lot créé — ${poids} kg de ${espece} depuis ${origine}`,
+        }
+      ]
+    };
+
+    // --- Sauvegarde ---
+    const lots = getLots();
+    lots.push(lot);
+    saveLots(lots);
+
+    // --- Retour visuel ---
+    const btn = document.getElementById('btnSave');
+    btn.disabled = true;
+    btn.textContent = '⏳ Enregistrement…';
+
+    setTimeout(() => showToast(lot.id), 300);
+  }
+
+  // ===== CLEAR ERRORS ON INPUT =====
+  ['producteur','espece','origine','poids','dateRecolte'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => setError(id, false));
+      el.addEventListener('change', () => setError(id, false));
+    }
+  });
+
+  document.getElementById('lotForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  saveLot();
+});
+
+</script>
+
+</body>
+</html>
